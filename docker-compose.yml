@@ -1,0 +1,15 @@
+version: '3'
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_VHOST: rmq_test
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+      - ./setup.sh:/etc/rabbitmq/setup.sh
