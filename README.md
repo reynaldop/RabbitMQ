@@ -16,6 +16,14 @@ http://localhost:15672/
 
 acceder con las credencales ubicadas en el archivo messages/.env
 
+acceder al directorio
+
+messages/
+
+ejecutar
+
+composer install
+
 para poder hacer pruebas de funcionamento solo es necesario ejecutar los archivos
 
 messages/consumerMessage.php //Para publicar en RMQ
