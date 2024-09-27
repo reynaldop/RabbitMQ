@@ -21,3 +21,10 @@ para poder hacer pruebas de funcionamento solo es necesario ejecutar los archivo
 messages/consumerMessage.php //Para publicar en RMQ
 
 messages/consumerMessage.php //Para leer de RMQ
+
+
+IMPORTATE
+
+para detener docker 
+
+docker-compose down  
