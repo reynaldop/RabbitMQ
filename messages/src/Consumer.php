@@ -1,14 +1,27 @@
 <?php
 namespace King\Messages;
 
+use Dotenv\Dotenv;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class Consumer
 {
+    public function __construct()
+    {
+        // Cargar las variables de entorno desde el archivo .env
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv->load();
+    }
+
     public function consumeMessages()
     {
         try {
-            $connection = new AMQPStreamConnection('localhost', 5672, 'user', 'password', 'rmq_test');
+            $connection = new AMQPStreamConnection(
+                $_ENV['RABBITMQ_HOST'],
+                $_ENV['RABBITMQ_PORT'],
+                $_ENV['RABBITMQ_USER'],
+                $_ENV['RABBITMQ_PASSWORD'],
+                $_ENV['RABBITMQ_VHOST']);
         } catch (\Exception $e) {
             var_dump($e->getMessage());
             die();

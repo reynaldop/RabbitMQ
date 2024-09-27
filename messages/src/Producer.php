@@ -4,12 +4,30 @@ namespace King\Messages;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use Dotenv\Dotenv; // Para usar la librería phpdotenv
 
 class Producer
 {
+    public function __construct()
+    {
+        // Cargar las variables de entorno desde el archivo .env
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv->load();
+    }
+
     public function sendMessage()
     {
-        $connection = new AMQPStreamConnection('localhost', 5672, 'user', 'password', 'rmq_test');
+        try {
+            $connection = new AMQPStreamConnection(
+                $_ENV['RABBITMQ_HOST'],
+                $_ENV['RABBITMQ_PORT'],
+                $_ENV['RABBITMQ_USER'],
+                $_ENV['RABBITMQ_PASSWORD'],
+                $_ENV['RABBITMQ_VHOST']);
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            die();
+        }
         $channel = $connection->channel();
 
         // Declarar el exchange y la cola
@@ -32,6 +50,11 @@ class Producer
         echo " [x] Mensaje enviado: $data\n";
 
         $channel->close();
-        $connection->close();
+        try {
+            $connection->close();
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            die();
+        }
     }
 }
