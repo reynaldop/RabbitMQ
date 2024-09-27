@@ -21,11 +21,13 @@ class Consumer
                 $_ENV['RABBITMQ_PORT'],
                 $_ENV['RABBITMQ_USER'],
                 $_ENV['RABBITMQ_PASSWORD'],
-                $_ENV['RABBITMQ_VHOST']);
+                $_ENV['RABBITMQ_VHOST']
+            );
         } catch (\Exception $e) {
             var_dump($e->getMessage());
             die();
         }
+
         $channel = $connection->channel();
 
         // Declarar la cola
@@ -45,12 +47,22 @@ class Consumer
                 // Si recibimos un mensaje, procesarlo
                 echo ' [x] Recibido ', $msg->body, "\n";
 
-                // Verificar si el mensaje tiene la propiedad delivery_tag antes de usarla
-                if (isset($msg->delivery_tag)) {
-                    $channel->basic_ack($msg->delivery_tag); // Aceptar el mensaje
+                // Asegúrate de que el ACK se envía siempre que recibas un mensaje válido
+                try {
+                    // Procesar el mensaje
+                    $this->procesarMensaje($msg->body);
+
+                    // Confirmar la recepción del mensaje
+                    $channel->basic_ack($msg->delivery_info['delivery_tag']);
+                    echo " [x] Mensaje confirmado (ACK enviado).\n";
+
+                } catch (\Exception $e) {
+                    // Manejo de errores si el procesamiento del mensaje falla
+                    echo " [!] Error procesando el mensaje: " . $e->getMessage() . "\n";
                 }
 
-                $emptyCheckCount = 0; // Reiniciar el contador si encontramos un mensaje
+                // Reiniciar el contador de intentos vacíos
+                $emptyCheckCount = 0;
             } else {
                 // Si no hay mensajes en la cola, incrementar el contador de intentos vacíos
                 $emptyCheckCount++;
@@ -67,6 +79,7 @@ class Consumer
             }
         }
 
+        // Cerrar el canal y la conexión
         $channel->close();
         try {
             $connection->close();
@@ -74,5 +87,12 @@ class Consumer
             var_dump($e->getMessage());
             die();
         }
+    }
+
+    private function procesarMensaje($mensaje)
+    {
+        // Simular procesamiento del mensaje
+        echo " [x] Procesando el mensaje: $mensaje\n";
+        // Aquí es donde procesas el mensaje, como guardarlo en una base de datos o hacer otras acciones.
     }
 }
