@@ -7,7 +7,12 @@ class Consumer
 {
     public function consumeMessages()
     {
-        $connection = new AMQPStreamConnection('localhost', 5672, 'user', 'password', 'rmq_test');
+        try {
+            $connection = new AMQPStreamConnection('localhost', 5672, 'user', 'password', 'rmq_test');
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            die();
+        }
         $channel = $connection->channel();
 
         // Declarar la cola
@@ -50,6 +55,11 @@ class Consumer
         }
 
         $channel->close();
-        $connection->close();
+        try {
+            $connection->close();
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            die();
+        }
     }
 }
