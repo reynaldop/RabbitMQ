@@ -1,1 +1,3 @@
 /rabbitmq_data/
+/messages/vendor/
+/messages/composer.lock

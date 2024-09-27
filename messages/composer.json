@@ -1,0 +1,21 @@
+{
+    "name": "king/messages",
+    "description": "Proyecto para enviar y consumir mensajes",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Reynaldo Pizarro Glez.",
+            "email": "pigorey@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "King\\Messages\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php-amqplib/php-amqplib": "^3.7"
+    }
+}
